@@ -28,7 +28,7 @@ services:
       WORKERS_COUNT: 1
   adhoc_worker:
     <<: *ql-service
-    command: dev_worker
+    command: dev_celery_worker
     environment:
       QUEUES: "queries"
       WORKERS_COUNT: 2
