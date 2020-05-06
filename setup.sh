@@ -32,7 +32,7 @@ install_docker() {
 clean_up() {
     echo $QL_BASE_PATH
     #Removing data dir as we don't want the data 
-    if [[ -e /usr/bin/docker-compose && -e $QL_BASE_PATH ]]; then
+    if [[ -e /usr/bin/docker-compose && -e $QL_BASE_PATH/env ]]; then
     sudo docker-compose stop
     sudo docker-compose down
     sudo docker container stop $(sudo docker container ls -aq)
