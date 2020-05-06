@@ -17,8 +17,8 @@ install_docker() {
  	sudo yum remove -y docker docker-client docker-client-latest docker-common docker-latest docker-latest-logrotate docker-logrotate  docker-engine
         sudo yum-config-manager --add-repo https://download.docker.com/linux/centos/docker-ce.repo
 	sudo yum -y update
-        sudo yum install -y yum-utils device-mapper-persistent-data lvm2 epel-release wget pwgen curl
-	sudo yum install -y docker-ce
+        sudo yum install -y yum-utils device-mapper-persistent-data lvm2 epel-release wget curl
+	sudo yum install -y docker-ce pwgen
 	sudo systemctl start docker
     fi
     # Install Docker Compose
