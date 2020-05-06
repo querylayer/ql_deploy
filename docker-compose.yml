@@ -1,0 +1,58 @@
+version: '2'
+x-ql-service: &ql-service
+  image: registry.querylayer.com/qlre:latest
+  depends_on:
+    - postgres
+    - redis
+  env_file: /opt/ql/env
+  restart: always
+services:
+  server:
+    <<: *ql-service
+    command: server
+    ports:
+      - "5000:5000"
+    environment:
+      REDASH_WEB_WORKERS: 4
+  scheduler:
+    <<: *ql-service
+    command: scheduler
+    environment:
+      QUEUES: "celery"
+      WORKERS_COUNT: 1
+  scheduled_worker:
+    <<: *ql-service
+    command: worker
+    environment:
+      QUEUES: "scheduled_queries,schemas"
+      WORKERS_COUNT: 1
+  adhoc_worker:
+    <<: *ql-service
+    command: dev_worker
+    environment:
+      QUEUES: "queries"
+      WORKERS_COUNT: 2
+  redis:
+    image: redis:5.0-alpine
+    restart: always
+  postgres:
+    image: registry.querylayer.com/qlpost:latest 
+    env_file:
+      - /opt/ql/env
+    ports:
+      - "5432:5432"
+    volumes:
+      - /opt/ql/postgres-data:/var/lib/postgresql/data
+      - /opt/ql/sql_scripts:/docker-entrypoint-initdb.d/
+      - /opt/ql/postgres.conf:/usr/local/pgsql/data/postgresql.conf
+      - /opt/ql/pg_hba.conf:/usr/local/pgsql/data/pg_hba.conf
+    restart: always
+  nginx:
+    image: redash/nginx:latest
+    ports:
+      - "80:80"
+    depends_on:
+      - server
+    links:
+      - server:redash
+    restart: always
