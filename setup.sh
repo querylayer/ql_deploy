@@ -92,9 +92,9 @@ setup_compose() {
 
 setup_datasource() {
     while true; do
-	    read -p "Logged into webinterface ?[Y/n]" yn
+	    read -p "Registered organisation ?[Y/n]" yn
 	    case $yn in
-	       	    [Yy]* ) sudo docker exec  -it $(sudo docker ps -a | grep ql_server| awk '{print $1}') /app/bin/run /app/manage.py ds new "DummyData" --type  "pg" --options "{ \"dbname\" : \"bank\", \"host\": \"postgres\", \"user\": \"ql_user\", \"password\": \"$QL_PASSWORD\" }" > /dev/null 2>&1 ;echo -e "\e[32m Datasource configuration for dummy data completed\e[0m" ;sudo docker exec  -it $(sudo docker ps -a | grep ql_server| awk '{print $1}') /app/bin/run /app/manage.py ds new "Postgres" --type  "pg" --options "{ \"dbname\" : \"datasource\", \"host\": \"postgres\", \"user\": \"postgres\", \"password\": \"$POSTGRES_PASSWORD\" }" > /dev/null 2>&1 ;echo -e "\e[32mDatasource configuration for blank db completed\e[0m" ;  break;;
+	       	    [Yy]* ) read -p "Provide the registered organisation name:" orgname ; sudo docker exec  -it $(sudo docker ps -a | grep ql_server| awk '{print $1}') /app/bin/run /app/manage.py ds new "DummyData" --type  "pg" --org "$orgname" --options "{ \"dbname\" : \"bank\", \"host\": \"postgres\", \"user\": \"ql_user\", \"password\": \"$QL_PASSWORD\" }" > /dev/null 2>&1 ;echo -e "\e[32m Datasource configuration for dummy data completed\e[0m" ;sudo docker exec  -it $(sudo docker ps -a | grep ql_server| awk '{print $1}') /app/bin/run /app/manage.py ds new "Postgres" --type  "pg" --org "$orgname" --options "{ \"dbname\" : \"datasource\", \"host\": \"postgres\", \"user\": \"postgres\", \"password\": \"$POSTGRES_PASSWORD\" }" > /dev/null 2>&1 ;echo -e "\e[32mDatasource configuration for blank db completed\e[0m" ;  break;;
 	            [Nn]* ) exit;;
 	            * ) echo "Please answer yes or no.";;
 	    esac
