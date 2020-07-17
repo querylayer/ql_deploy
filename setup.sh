@@ -4,6 +4,11 @@ set -eu
 
 QL_BASE_PATH=/opt/ql/
 
+## Setting proxy
+PROXY_URL="" 
+[  -z "$PROXY_URL" ] && echo "No Proxy set" || export http_proxy="$PROXY_URL" ; export https_proxy="$PROXY_URL"
+
+
 install_docker() {
     # Install Docker
     if [[ -f /etc/lsb-release ]]; then
